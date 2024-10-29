@@ -4,8 +4,8 @@ let shuffledNumbers = [];
 
 // Get elements from the DOM
 const numberDisplay = document.getElementById('numberDisplay');
+const startButton = document.getElementById('startButton');
 const nextButton = document.getElementById('nextButton');
-
 
 // Shuffle the numbers array
 function shuffleArray(array) {
@@ -21,8 +21,8 @@ function startApplication() {
     shuffleArray(shuffledNumbers); // Shuffle the numbers
     currentIndex = 0; // Reset current index
     numberDisplay.textContent = "Number: -"; // Reset display
+    numberDisplay.style.display = 'block'; // Show the number display
     nextButton.disabled = false; // Enable next button
-
 }
 
 // Display the next number
@@ -33,13 +33,9 @@ function displayNextNumber() {
     } else {
         numberDisplay.textContent = "All numbers displayed!";
         nextButton.disabled = true; // Disable next button when done
-        
     }
 }
 
 // Event listeners
+startButton.addEventListener('click', startApplication);
 nextButton.addEventListener('click', displayNextNumber);
-
-
-// Start the application on page load
-startApplication();
