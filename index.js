@@ -20,9 +20,9 @@ function startApplication() {
     shuffledNumbers = [...numbers]; // Copy original array
     shuffleArray(shuffledNumbers); // Shuffle the numbers
     currentIndex = 0; // Reset current index
-    numberDisplay.textContent = "Number: -"; // Reset display
     numberDisplay.style.display = 'block'; // Show the number display
     nextButton.disabled = false; // Enable next button
+    numberDisplay.textContent = "Number: -"; // Reset display
 }
 
 // Display the next number
