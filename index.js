@@ -1,49 +1,45 @@
-let counter = 0;
-let intervalId = null;
-let isRunning = false;
+let numbers = Array.from({ length: 3500 }, (_, i) => i + 1); // Create an array of numbers from 1 to 3500
+let currentIndex = 0;
+let shuffledNumbers = [];
 
-const countDisplay = document.getElementById('countDisplay');
-const startButton = document.getElementById('startButton');
-const stopButton = document.getElementById('stopButton');
+// Get elements from the DOM
+const numberDisplay = document.getElementById('numberDisplay');
+const nextButton = document.getElementById('nextButton');
 const restartButton = document.getElementById('restartButton');
 
-startButton.addEventListener('click', startCounting);
-stopButton.addEventListener('click', stopCounting);
-restartButton.addEventListener('click', restartCounting);
-
-function startCounting() {
-    if (isRunning) return; // Prevent starting multiple intervals
-    isRunning = true;
-    counter = 0;
-    startButton.disabled = true;
-    stopButton.disabled = false;
-    restartButton.disabled = true;
-
-    intervalId = setInterval(() => {
-        if (counter < 3500) {
-            counter++;
-            countDisplay.textContent = `Count: ${counter}`;
-        } else {
-            clearInterval(intervalId);
-            isRunning = false;
-            alert("Reached 3500, restarting...");
-            startCounting();
-        }
-    }, 10); // Adjust speed here if necessary
+// Shuffle the numbers array
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    }
 }
 
-function stopCounting() {
-    if (!isRunning) return;
-    clearInterval(intervalId);
-    isRunning = false;
-    stopButton.disabled = true;
-    startButton.disabled = false;
-    restartButton.disabled = false;
+// Start the application
+function startApplication() {
+    shuffledNumbers = [...numbers]; // Copy original array
+    shuffleArray(shuffledNumbers); // Shuffle the numbers
+    currentIndex = 0; // Reset current index
+    numberDisplay.textContent = "Number: -"; // Reset display
+    nextButton.disabled = false; // Enable next button
+    restartButton.disabled = true; // Disable restart button
 }
 
-function restartCounting() {
-    counter = 0;
-    countDisplay.textContent = "Count: 0";
-    startButton.disabled = false;
-    restartButton.disabled = true;
+// Display the next number
+function displayNextNumber() {
+    if (currentIndex < shuffledNumbers.length) {
+        numberDisplay.textContent = `Number: ${shuffledNumbers[currentIndex]}`;
+        currentIndex++;
+    } else {
+        numberDisplay.textContent = "All numbers displayed!";
+        nextButton.disabled = true; // Disable next button when done
+        restartButton.disabled = false; // Enable restart button
+    }
 }
+
+// Event listeners
+nextButton.addEventListener('click', displayNextNumber);
+restartButton.addEventListener('click', startApplication);
+
+// Start the application on page load
+startApplication();
