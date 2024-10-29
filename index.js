@@ -1,6 +1,7 @@
-let isScrolling = false;
-let intervalId;
 let digits = [0, 0, 0, 0]; // Four digits to display
+let generatedNumbers = new Set(); // To keep track of generated numbers
+let intervalId;
+const scrollInterval = 100; // Interval to update digits in milliseconds
 
 // Get elements from the DOM
 const numberDisplay = document.getElementById('numberDisplay');
@@ -12,36 +13,60 @@ function updateDisplay() {
     numberDisplay.textContent = `Number: ${digits.join('')}`;
 }
 
-// Function to start scrolling
-function startScrolling() {
-    isScrolling = true;
-    stopButton.disabled = false; // Enable stop button
-    startButton.disabled = true; // Disable start button
-
-    // Start an interval to change each digit
-    intervalId = setInterval(() => {
-        for (let i = 0; i < digits.length; i++) {
-            digits[i] = Math.floor(Math.random() * 10); // Random number from 0 to 9
-        }
-        updateDisplay();
-    }, 100); // Change every 100ms (adjust as necessary)
+// Function to generate a unique random number based on digit constraints
+function generateRandomNumber() {
+    let number;
+    do {
+        // Generate digits based on the specified ranges
+        const firstDigit = Math.floor(Math.random() * 4); // 0-3
+        const secondDigit = Math.floor(Math.random() * 10); // 0-9
+        const thirdDigit = Math.floor(Math.random() * 10); // 0-9
+        const fourthDigit = Math.floor(Math.random() * 10); // 0-9
+        
+        // Combine digits to form the final number
+        number = `${firstDigit}${secondDigit}${thirdDigit}${fourthDigit}`;
+        
+        // Convert to integer for range checking
+        const combinedNumber = parseInt(number, 10);
+    } while (generatedNumbers.has(number) || parseInt(number) > 3500); // Ensure uniqueness and range
+    
+    generatedNumbers.add(number); // Add the generated number to the set
+    return number; // Return the unique number
 }
 
-// Function to stop scrolling and generate a final four-digit number
+// Function to start the scrolling effect
+function startScrolling() {
+    stopButton.disabled = false; // Enable the stop button
+    startButton.disabled = true; // Disable the start button
+    
+    // Scroll each digit
+    intervalId = setInterval(() => {
+        // Generate digits with a correct range
+        digits[0] = Math.floor(Math.random() * 4); // 1st digit: 0-3
+        digits[1] = Math.floor(Math.random() * 10); // 2nd digit: 0-9
+        digits[2] = Math.floor(Math.random() * 10); // 3rd digit: 0-9
+        digits[3] = Math.floor(Math.random() * 10); // 4th digit: 0-9
+
+        // Ensure the combined number is less than or equal to 3500
+        const combinedNumber = parseInt(digits.join(''), 10);
+        if (combinedNumber <= 3500) {
+            updateDisplay(); // Update the display with the current digits
+        }
+    }, scrollInterval); // Update every scrollInterval milliseconds
+}
+
+// Function to stop scrolling and display the number
 function stopScrolling() {
     clearInterval(intervalId); // Stop the interval
-    isScrolling = false;
+    stopButton.disabled = true; // Disable the stop button
+    startButton.disabled = false; // Enable the start button
 
-    // Generate a final number up to 3500
-    const finalNumber = Math.floor(Math.random() * 3501); // Random number from 0 to 3500
-    digits = String(finalNumber).padStart(4, '0').split('').map(Number); // Convert to array of digits
-
+    // Generate a unique random number
+    const finalNumber = generateRandomNumber(); 
+    digits = finalNumber.split('').map(Number); // Convert to array of digits
     updateDisplay(); // Display the final number
-    
-    stopButton.disabled = true; // Disable stop button
-    startButton.disabled = false; // Enable start button
 }
 
 // Event listeners
-startButton.addEventListener('click', startScrolling);
-stopButton.addEventListener('click', stopScrolling);
+startButton.addEventListener('click', startScrolling); // Start button functionality
+stopButton.addEventListener('click', stopScrolling); // Stop button functionality
