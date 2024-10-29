@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Number Counter</title>
+    <title>Random Number Scroller</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,10 +20,9 @@
             font-size: 16px;
         }
         #numberDisplay {
-            font-size: 150px; /* Make the font size larger */
+            font-size: 100px; /* Make the font size larger */
             margin: 20px;
             color: #333; /* Optional: Change color for better visibility */
-            display: none; /* Hide initially */
         }
         #background {
             width: 100%;
@@ -37,9 +36,9 @@
 <body>
 
     <div id="background"></div>
-    <div id="numberDisplay">Number: -</div>
+    <div id="numberDisplay">Number : 0000</div>
     <button id="startButton">Start</button>
-    <button id="nextButton" disabled>Next</button>
+    <button id="stopButton" disabled>Stop</button>
 
     <script src="index.js"></script>
 </body>
