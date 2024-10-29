@@ -1,41 +1,47 @@
-let numbers = Array.from({ length: 3500 }, (_, i) => i + 1); // Create an array of numbers from 1 to 3500
-let currentIndex = 0;
-let shuffledNumbers = [];
+let isScrolling = false;
+let intervalId;
+let digits = [0, 0, 0, 0]; // Four digits to display
 
 // Get elements from the DOM
 const numberDisplay = document.getElementById('numberDisplay');
 const startButton = document.getElementById('startButton');
-const nextButton = document.getElementById('nextButton');
+const stopButton = document.getElementById('stopButton');
 
-// Shuffle the numbers array
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-    }
+// Function to update the displayed number
+function updateDisplay() {
+    numberDisplay.textContent = `Number: ${digits.join('')}`;
 }
 
-// Start the application
-function startApplication() {
-    shuffledNumbers = [...numbers]; // Copy original array
-    shuffleArray(shuffledNumbers); // Shuffle the numbers
-    currentIndex = 0; // Reset current index
-    numberDisplay.style.display = 'block'; // Show the number display
-    nextButton.disabled = false; // Enable next button
-    numberDisplay.textContent = "Number: -"; // Reset display
+// Function to start scrolling
+function startScrolling() {
+    isScrolling = true;
+    stopButton.disabled = false; // Enable stop button
+    startButton.disabled = true; // Disable start button
+
+    // Start an interval to change each digit
+    intervalId = setInterval(() => {
+        for (let i = 0; i < digits.length; i++) {
+            digits[i] = Math.floor(Math.random() * 10); // Random number from 0 to 9
+        }
+        updateDisplay();
+    }, 100); // Change every 100ms (adjust as necessary)
 }
 
-// Display the next number
-function displayNextNumber() {
-    if (currentIndex < shuffledNumbers.length) {
-        numberDisplay.textContent = `Number: ${shuffledNumbers[currentIndex]}`;
-        currentIndex++;
-    } else {
-        numberDisplay.textContent = "All numbers displayed!";
-        nextButton.disabled = true; // Disable next button when done
-    }
+// Function to stop scrolling and generate a final four-digit number
+function stopScrolling() {
+    clearInterval(intervalId); // Stop the interval
+    isScrolling = false;
+
+    // Generate a final number up to 3500
+    const finalNumber = Math.floor(Math.random() * 3501); // Random number from 0 to 3500
+    digits = String(finalNumber).padStart(4, '0').split('').map(Number); // Convert to array of digits
+
+    updateDisplay(); // Display the final number
+    
+    stopButton.disabled = true; // Disable stop button
+    startButton.disabled = false; // Enable start button
 }
 
 // Event listeners
-startButton.addEventListener('click', startApplication);
-nextButton.addEventListener('click', displayNextNumber);
+startButton.addEventListener('click', startScrolling);
+stopButton.addEventListener('click', stopScrolling);
